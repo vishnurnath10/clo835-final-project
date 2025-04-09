@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>About Us</title>
+</head>
+<body style="background-image: url('/static/bg.jpg'); background-size: cover;">
+	<div style="color: #e4e4e4; text-align: center; height: 90px; vertical-align: middle;">
+
+		<h1>{{ header }}</h1>
+
+		{% if name %}
+		  <h2>Hello from {{ name }}!</h2>
+		{% else %}
+		  <h2>Hello from CLO835!</h2>
+		{% endif %}
+
+		{% if contents %}
+		  <textarea rows="10" cols="50">
+		    {{ contents }}
+		  </textarea>
+		{% endif %}
+
+	</div>
+</body>
+</html>
