@@ -16,7 +16,7 @@ DATABASE = os.environ.get("DATABASE") or "employees"
 DBPORT = int(os.environ.get("DBPORT"))
 BUCKET = os.environ.get("BUCKET")
 IMAGENAME = os.environ.get("IMAGENAME")
-HEADER_NAME = os.environ.get("HEADER_NAME",)
+HEADER_NAME = os.environ.get("HEADER_NAME","CLO835 Final Project")
 
 
 db_conn = connections.Connection(
