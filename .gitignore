@@ -1,0 +1,40 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+venv/
+env/
+
+# Environment variables and secrets
+.env
+
+# AWS credentials 
+*.pem
+*.key
+*.crt
+
+# Docker
+*.log
+*.pid
+*.sock
+*.tar
+
+# Python egg files
+*.egg
+*.egg-info/
+
+# Node 
+node_modules/
+
+# System files
+Thumbs.db
+
+# Kubernetes and CI/CD
+k8s/*.yaml~ 
+.github/secrets/
+
+# Cloud9
+.c9/
+
