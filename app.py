@@ -3,6 +3,8 @@ from pymysql import connections
 import os
 import random
 import argparse
+import boto3
+import requests
 
 app = Flask(__name__)
 
@@ -13,7 +15,7 @@ DATABASE = os.environ.get("DATABASE") or "employees"
 COLOR_FROM_ENV = os.environ.get('APP_COLOR') or "lime"
 DBPORT = int(os.environ.get("DBPORT"))
 
-# Create a connection to the MySQL database
+
 db_conn = connections.Connection(
     host= DBHOST,
     port=DBPORT,
@@ -25,7 +27,7 @@ db_conn = connections.Connection(
 output = {}
 table = 'employee'
 
-# Define the supported color codes
+
 color_codes = {
     "red": "#e74c3c",
     "green": "#16a085",
@@ -36,11 +38,29 @@ color_codes = {
     "lime": "#C1FF9C",
 }
 
-# Create a string of supported colors
+
 SUPPORTED_COLORS = ",".join(color_codes.keys())
 
 # Generate a random color
 COLOR = random.choice(list(color_codes.keys()))
+
+
+BG_IMAGE_URL = os.environ.get("BG_IMAGE_URL")
+if BG_IMAGE_URL:
+    print(f"Background image URL: {BG_IMAGE_URL}")
+    try:
+        response = requests.get(BG_IMAGE_URL)
+        if response.status_code == 200:
+            os.makedirs("app/static", exist_ok=True)
+            with open("app/static/bg.jpg", "wb") as f:
+                f.write(response.content)
+            print("Background image downloaded successfully.")
+        else:
+            print(f"Failed to download background image. Status code: {response.status_code}")
+    except Exception as e:
+        print(f"Error downloading background image: {e}")
+else:
+    print("No BG_IMAGE_URL provided.")
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -103,7 +123,7 @@ def FetchData():
                            lname=output["last_name"], interest=output["primary_skills"], location=output["location"], color=color_codes[COLOR])
 
 if __name__ == '__main__':
-    # Check for Command Line Parameters for color
+   
     parser = argparse.ArgumentParser()
     parser.add_argument('--color', required=False)
     args = parser.parse_args()
@@ -119,7 +139,7 @@ if __name__ == '__main__':
     else:
         print("No command line argument or environment variable. Picking a Random Color =" + COLOR)
 
-    # Check if input color is a supported one
+    
     if COLOR not in color_codes:
         print("Color not supported. Received '" + COLOR + "' expected one of " + SUPPORTED_COLORS)
         exit(1)
