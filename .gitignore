@@ -39,3 +39,4 @@ k8s/*.yaml~
 .c9/
 
 *.sh
+*cluster-config.yaml
