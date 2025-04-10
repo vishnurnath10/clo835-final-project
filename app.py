@@ -31,8 +31,8 @@ db_conn = connections.Connection(
 def download_s3_image(bucket, image_name):
     try:
         s3 = boto3.client('s3')
-        os.makedirs("app/static", exist_ok=True)
-        image_path = os.path.join("app/static", "bg.jpg")
+        os.makedirs("static", exist_ok=True)
+        image_path = os.path.join("static", "bg.jpg")
         s3.download_file(bucket, image_name, image_path)
         logging.info(f"Downloaded {image_name} from S3 bucket {bucket}")
     except Exception as e:
