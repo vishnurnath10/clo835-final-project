@@ -103,7 +103,15 @@ def FetchData():
     finally:
         cursor.close()
 
-    return render_template("getempoutput.html", **output, header=HEADER_NAME)
+    # return render_template("getempoutput.html", **output, header=HEADER_NAME)
+    return render_template("getempoutput.html",
+                       emp_id=output["emp_id"],
+                       first_name=output["first_name"],
+                       last_name=output["last_name"],
+                       primary_skills=output["primary_skills"],
+                       location=output["location"],
+                       header=HEADER_NAME)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=81, debug=True)
