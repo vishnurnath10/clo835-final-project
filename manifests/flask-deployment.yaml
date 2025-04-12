@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app
+  namespace: final
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      serviceAccountName: clo835
+      imagePullSecrets:
+        - name: ecr-pull-secret
+      containers:
+        - name: flask-app
+          image: 661484852155.dkr.ecr.us-east-1.amazonaws.com/clo835-final-project:flask-v9
+          ports:
+            - containerPort: 81
+          env:
+            - name: DBHOST
+              value: mysql
+            - name: DBPORT
+              value: "3306"
+            - name: DBUSER
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DBUSER
+            - name: DBPWD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: DBPWD
+            - name: DATABASE
+              value: employees
+            - name: BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: BUCKET
+            - name: IMAGENAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: IMAGENAME
+            - name: HEADER_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: HEADER_NAME
+
