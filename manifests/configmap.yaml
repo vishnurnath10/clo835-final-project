@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: final
+data:
+  BUCKET: clo835-bg-images
+  IMAGENAME: imagetest.jpg
+  HEADER_NAME: "Team Deadpool – Code. Deploy. Regenerate."
+
