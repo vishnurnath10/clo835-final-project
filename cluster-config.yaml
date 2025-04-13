@@ -1,0 +1,25 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: clo835-final-cluster2
+  region: us-east-1
+  version: "1.31"
+
+availabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+iam:
+  serviceRoleARN: arn:aws:iam::166147787843:role/LabRole
+
+managedNodeGroups:
+  - name: final-nodegroup
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 2
+    iam:
+      instanceRoleARN: arn:aws:iam::166147787843:role/LabRole
+    ssh:
+      enableSsm: true
+
