@@ -8,7 +8,6 @@ logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 
-
 DBHOST = os.environ.get("DBHOST") or "localhost"
 DBUSER = os.environ.get("DBUSER") or "root"
 DBPWD = os.environ.get("DBPWD") or "passwors"
@@ -16,16 +15,17 @@ DATABASE = os.environ.get("DATABASE") or "employees"
 DBPORT = int(os.environ.get("DBPORT"))
 BUCKET = os.environ.get("BUCKET")
 IMAGENAME = os.environ.get("IMAGENAME")
-HEADER_NAME = os.environ.get("HEADER_NAME","CLO835 Final Project")
+HEADER_NAME = os.environ.get("HEADER_NAME", "CLO835 Final Project")
 
 
-db_conn = connections.Connection(
-    host=DBHOST,
-    port=DBPORT,
-    user=DBUSER,
-    password=DBPWD,
-    db=DATABASE
-)
+def get_db_connection():
+    return connections.Connection(
+        host=DBHOST,
+        port=DBPORT,
+        user=DBUSER,
+        password=DBPWD,
+        db=DATABASE
+    )
 
 
 def download_s3_image(bucket, image_name):
@@ -44,13 +44,16 @@ if BUCKET and IMAGENAME:
 else:
     logging.warning("S3 BUCKET or IMAGENAME not provided. Background image won't be set.")
 
+
 @app.route("/", methods=['GET', 'POST'])
 def home():
     return render_template('addemp.html', header=HEADER_NAME)
 
+
 @app.route("/about", methods=['GET','POST'])
 def about():
     return render_template('about.html', header=HEADER_NAME)
+
 
 @app.route("/addemp", methods=['POST'])
 def AddEmp():
@@ -61,6 +64,7 @@ def AddEmp():
     location = request.form['location']
 
     insert_sql = "INSERT INTO employee VALUES (%s, %s, %s, %s, %s)"
+    db_conn = get_db_connection()
     cursor = db_conn.cursor()
 
     try:
@@ -69,17 +73,22 @@ def AddEmp():
         emp_name = f"{first_name} {last_name}"
     finally:
         cursor.close()
+        db_conn.close()
 
     return render_template('addempoutput.html', name=emp_name, header=HEADER_NAME)
+
 
 @app.route("/getemp", methods=['GET', 'POST'])
 def GetEmp():
     return render_template("getemp.html", header=HEADER_NAME)
 
+
 @app.route("/fetchdata", methods=['GET', 'POST'])
 def FetchData():
     emp_id = request.form['emp_id']
     select_sql = "SELECT emp_id, first_name, last_name, primary_skill, location FROM employee WHERE emp_id=%s"
+
+    db_conn = get_db_connection()
     cursor = db_conn.cursor()
 
     try:
@@ -102,15 +111,15 @@ def FetchData():
         return "Error occurred", 500
     finally:
         cursor.close()
+        db_conn.close()
 
-    # return render_template("getempoutput.html", **output, header=HEADER_NAME)
     return render_template("getempoutput.html",
-                       emp_id=output["emp_id"],
-                       first_name=output["first_name"],
-                       last_name=output["last_name"],
-                       primary_skills=output["primary_skills"],
-                       location=output["location"],
-                       header=HEADER_NAME)
+                           emp_id=output["emp_id"],
+                           first_name=output["first_name"],
+                           last_name=output["last_name"],
+                           primary_skills=output["primary_skills"],
+                           location=output["location"],
+                           header=HEADER_NAME)
 
 
 if __name__ == '__main__':
